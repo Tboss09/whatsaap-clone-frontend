@@ -1,0 +1,8 @@
+POST https://whatsapp-cloned-backend.herokuapp.com/
+
+{
+    "name " :"Akosile tayo",
+    "user":[
+
+    ]
+}
