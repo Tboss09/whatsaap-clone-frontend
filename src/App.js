@@ -11,13 +11,11 @@ import { Switch, Route } from 'react-router-dom'
 
 const App = () => {
  const [user, setUser] = React.useState(null)
-
-
- return user ? (
+        return user ? (
   <Switch>
    <>
     <Route path="/chatroom/:roomId">
-     <ChatRoom googleUsername={user.displayName} />
+     <ChatRoom googleUsername={user.displayName} photoUrl = {user.photoUrl} />
     </Route>
 
     <Route exact path="/">

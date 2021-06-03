@@ -1,105 +1,56 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import SwipeableViews from 'react-swipeable-views';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
-import Typography from '@material-ui/core/Typography';
-import Box from '@material-ui/core/Box';
+import React, { useState } from 'react'
+import { Tabs } from 'react-simple-tabs-component'
+import ChatGroups from '../Chats/ChatGroups'
+// Component Example
 
-// Internal
-import ChatGroups from '../Chats/ChatGroups';
-
-function TabPanel(props) {
-    const { children, value, index,  ...other } = props;
-
-    return (
-        <div
-            role="tabpanel"
-            hidden={value !== index}
-            id={`full-width-tabpanel-${index}`}
-            aria-labelledby={`full-width-tab-${index}`}
-            {...other}
-        >
-            {value === index && (
-                <Box p={3}>
-                    <Typography component="div">{children}</Typography>
-                </Box>
-            )}
-        </div>
-    );
+// Component Example
+const TabTwo = () => {
+ return (
+  <>
+   
+   <p className ="text-center pt-36">
+     Feature coming soon 😊✌
+   </p>
+  </>
+ )
 }
 
-TabPanel.propTypes = {
-    children: PropTypes.node,
-    index: PropTypes.any.isRequired,
-    value: PropTypes.any.isRequired,
-};
-
-function a11yProps(index) {
-    return {
-        id: `full-width-tab-${index}`,
-        'aria-controls': `full-width-tabpanel-${index}`,
-    };
+// Component Example
+const TabThree = () => {
+ return (
+  <>
+   
+   <p className ="text-center pt-36">
+     Feature coming soon 😊✌
+   </p>
+  </>
+ )
 }
 
-const useStyles = makeStyles((theme) => ({
-    root: {
-        backgroundColor: theme.palette.background.paper,
-        width: 500,
-    },
-}));
+// Tabs structure Array
+const tabs = [
+ {
+  label: 'Chats', // Tab title
+  index: 1, // Tab index
+  Component: ChatGroups, // Tab Component
+ },
+ {
+  label: 'Status',
+  index: 2,
+  Component: TabTwo,
+ },
+ {
+  label: 'Calls',
+  index: 3,
+  Component: TabThree,
+ },
+]
 
-export default function FullWidthTabs() {
-    const classes = useStyles();
-    const theme = useTheme();
-    const [value, setValue] = React.useState(0);
-
-    const handleChange = (event, newValue) => {
-        setValue(newValue);
-    };
-
-    const handleChangeIndex = (index) => {
-        setValue(index);
-    };
-
-    return (
-        <div className={classes.root}>
-            
-            <AppBar position="static" color="default">
-                <Tabs
-                    value={value}
-                    onChange={handleChange}
-                    indicatorColor="primary"
-                    textColor="primary"
-                    variant="fullWidth"
-                    aria-label="full width tabs example"
-                >
-                    <Tab label="Chat" {...a11yProps(0)} />
-                    <Tab label="Status" {...a11yProps(1)} />
-                    <Tab label="Calls" {...a11yProps(2)} />
-                </Tabs>
-            </AppBar>
-            <SwipeableViews
-                axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
-                index={value}
-                onChangeIndex={handleChangeIndex}
-            >
-                {/* Chat groups */}
-                <TabPanel value={value} index={0} dir={theme.direction}>
-                    <ChatGroups />
-                </TabPanel>
-                {/* Chat groups */}
-
-
-                <TabPanel value={value} index={1} dir={theme.direction}>
-                    Status
-        </TabPanel>
-                <TabPanel value={value} index={2} dir={theme.direction}>
-                    Item Three
-        </TabPanel>
-            </SwipeableViews>
-        </div>
-    );
+export default function TabsComponent() {
+ const [selectedTab, setSelectedTab] = useState(tabs[0].index)
+ return (
+  <div>
+   <Tabs tabs={tabs} onClick={setSelectedTab} selectedTab={selectedTab} />
+  </div>
+ )
 }
