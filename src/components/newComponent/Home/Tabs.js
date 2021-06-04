@@ -49,8 +49,8 @@ const tabs = [
 export default function TabsComponent() {
  const [selectedTab, setSelectedTab] = useState(tabs[0].index)
  return (
-  <div>
-   <Tabs tabs={tabs} onClick={setSelectedTab} selectedTab={selectedTab} />
+  <div >
+   <Tabs className = "tabs-component" tabs={tabs} onClick={setSelectedTab} selectedTab={selectedTab} />
   </div>
  )
 }

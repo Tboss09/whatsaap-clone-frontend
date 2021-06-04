@@ -7,20 +7,22 @@ import Login from './components/Login'
 
 // external files
 import { Switch, Route } from 'react-router-dom'
-
+import ThemeContext from './components/Context/ThemeContext'
 
 const App = () => {
  const [user, setUser] = React.useState(null)
-        return user ? (
+ return user ? (
   <Switch>
    <>
     <Route path="/chatroom/:roomId">
-     <ChatRoom googleUsername={user.displayName} photoUrl = {user.photoUrl} />
+     <ChatRoom googleUsername={user.displayName} />
     </Route>
 
-    <Route exact path="/">
-     <HomePage user={user} />
-    </Route>
+    <ThemeContext.Provider value={{name:user.displayName,email:user.email}}>
+     <Route exact path="/">
+      <HomePage user={user} />
+     </Route>
+    </ThemeContext.Provider>
    </>
   </Switch>
  ) : (

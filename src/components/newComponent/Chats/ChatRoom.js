@@ -3,10 +3,9 @@ import React from 'react'
 import { Avatar, TextareaAutosize } from '@material-ui/core'
 import { useParams, useHistory } from 'react-router-dom'
 import socket from '../../../websocket/wb'
-import webNotification from 'simple-web-notification'
 import whatsappDate from 'date-and-time'
 
-const ChatRoom = ({ googleUsername, photoUrl }) => {
+const ChatRoom = ({ googleUsername }) => {
  const urlParam = useParams()
  let history = useHistory()
  const { roomId } = urlParam
@@ -21,8 +20,8 @@ const ChatRoom = ({ googleUsername, photoUrl }) => {
   socket.emit('get_group_by_id', roomId)
   socket.on('get_group_with_id', message => {
    setMessageHeader(message.name)
+  setMessages(message)
   })
-  return () => socket.close()
  }, [roomId])
  // Fetch data for Group
 
@@ -42,28 +41,17 @@ const ChatRoom = ({ googleUsername, photoUrl }) => {
  }
 
  // this makes the app real time
- //  /Through the app of socket io, this allows you to see the mssage you sent immediately
- React.useCallback(() => {
-  socket.on('get_last_sent_text_message', chatMessage => {
+ //  /Through the app of socket io, this allows you to see the message you sent immediately
+ React.useEffect(() => {
+  socket.open()
+  socket.emit('get_last_sent_message_foreach_group')
+  socket.on('get_last_sent_message_foreach_group', chatMessage => {
+    console.log(chatMessage)
    setMessages(prevMessage => ({
     user: [...(prevMessage.user || []), chatMessage[0]],
    }))
   })
- }, [setMessages])
-
- React.useCallback(() => {
-  socket.on('notification_to_user', message => {
-   console.log('new message only for other users', message)
-   webNotification.showNotification('Example notifcation', {
-    body: message.message,
-    icon: photoUrl,
-    onClick: onClicked => {
-     console.log('object')
-    },
-    autoClose: 5000,
-   })
-  })
- }, [photoUrl])
+ }, [])
 
  return (
   <div className="chatBodyMessage ">
@@ -144,20 +132,25 @@ const ChatRoom = ({ googleUsername, photoUrl }) => {
 
    <div className="conversation ">
     <div className="conversation-container pt-10 px-4">
-     {messages.user !== undefined &&
-      messages.user.map(({ name, message, _id, date }) => {
-       const isMessageFromCurrentUser = googleUsername === name
+      
+     {messages.user !== undefined ? 
+      messages.user.map((user) => {
+        const {  name,message, _id, date } = user !== undefined && user
+        console.log(user)
+        const currentUserName = name
+       const isMessageFromCurrentUser = googleUsername === currentUserName
        const dateOfMessage = new Date(date)
+       
        return (
         <div
-         className={`message  relative mb-10 ${
+         className={`message  relative mb-2 ${
           isMessageFromCurrentUser ? 'sent' : 'received'
          }`}
          key={_id}
         >
          {message}
          <span className="absolute text-xs -top-4 truncate left-0 text-green-700 font-bold capitalize  w-24">
-          {!isMessageFromCurrentUser && name}
+          {!isMessageFromCurrentUser && currentUserName}
          </span>
          <span className="metadata">
           <span className="time">
@@ -181,7 +174,9 @@ const ChatRoom = ({ googleUsername, photoUrl }) => {
          </span>
         </div>
        )
-      })}
+      })
+      :''
+      }
     </div>
 
     <form className="input-area " onSubmit={handleSubmit}>
@@ -199,7 +194,7 @@ const ChatRoom = ({ googleUsername, photoUrl }) => {
       </div>
       <div className="attachment animated bounceIn">
        <svg
-        class="h-5 w-5 text-gray-500"
+        className="h-5 w-5 text-gray-500"
         viewBox="0 0 24 24"
         fill="none"
         stroke="currentColor"
@@ -213,7 +208,7 @@ const ChatRoom = ({ googleUsername, photoUrl }) => {
       </div>
       <div className="camera animated bounceIn">
        <svg
-        class="h-5 w-5 text-gray-500"
+        className="h-5 w-5 text-gray-500"
         width="24"
         height="24"
         viewBox="0 0 24 24"
@@ -256,7 +251,7 @@ const ChatRoom = ({ googleUsername, photoUrl }) => {
          </svg>
         ) : (
          <svg
-          class="h-5 w-5 text-white outline-none"
+          className="h-5 w-5 text-white outline-none"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"

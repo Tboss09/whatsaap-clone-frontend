@@ -7,10 +7,11 @@ import { Link } from 'react-router-dom'
 // internal file
 import socket from '../../../websocket/wb'
 import whatsappDate from 'date-and-time'
-
-//  internal files
+import ThemeContext from '../../Context/ThemeContext'
 
 const ChatGroups = () => {
+ const google = React.useContext(ThemeContext)
+
  //About to add new groups
  const [showAddNewGroup, setShowAddNewGroup] = React.useState(false)
  //  get the chat rooms
@@ -21,7 +22,6 @@ const ChatGroups = () => {
   socket.emit('get_all_whatsapp_group')
   socket.on('get_data', message => {
    setChatRooms(message)
-   console.log(message)
   })
   return () => socket.close()
  }, [])
@@ -43,10 +43,7 @@ const ChatGroups = () => {
    setShowAddNewGroup(false)
   }
  }
- const skeleton = [
-  1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 5, 3, 2, 3, 4, 5, 6, 6, 4, 3, 3, 4, 4, 6, 4, 3,
- ]
- console.log(skeleton.length)
+ const skeleton = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 5, 3, 2, 3, 4, 4, 4, 6, 4, 3]
 
  React.useEffect(() => {
   socket.on('newly_created_group', message => {
@@ -91,27 +88,32 @@ const ChatGroups = () => {
         timeOfMessage.getMilliseconds() < new Date().getMilliseconds()
          ? whatsappDate.format(timeOfMessage, 'hh:mm')
          : whatsappDate.format(timeOfMessage, ' hh:mm')
+
        return (
         <Link key={_id} to={`/chatroom/${_id}`}>
          <div className="chatGroup">
           <div className="flex items-center">
            <Avatar
-            src={`https:picsum.photos/500/500`}
+            src="https:picsum.photos/500/500"
             className="object-contain"
            />
 
            <div className="pl-3">
-            <h2 className="text-sm font-semibold capitalize leading-5 ">
+            <h2 className="text-base w-56 truncate font-semibold capitalize leading-7 ">
              {name}
             </h2>
 
             <p
-             className={`font-normal text-xs ${
-              message !== undefined ? '' : 'text-gray-300 font-light italic'
+             className={`font-normal text-base truncate ${
+              message !== undefined
+               ? ' w-56 text-gray-600'
+               : 'text-gray-300 font-light italic'
              } `}
             >
              {message !== undefined
-              ? message.message
+              ? `${message.name !== google.name ? message.name + ':' : ''} ${
+                 message.message
+                } `
               : 'Tap to start a conversation'}
             </p>
            </div>
@@ -128,7 +130,10 @@ const ChatGroups = () => {
        {skeleton.map(skeleton => (
         <>
          {/* Skeleton to load when data is not available */}
-         <div key ={skeleton} className="flex items-center h-24 w-full justify-evenly animate-pulse  border-b-2 border-gray-300">
+         <div
+          key={skeleton}
+          className="flex items-center h-24 w-full justify-evenly animate-pulse  border-b-2 border-gray-300"
+         >
           <div className="image h-10 w-10 bg-gray-300 rounded-full"></div>
           <div>
            <div className="image h-8 w-60 bg-gray-300 mb-2"></div>

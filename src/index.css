@@ -360,7 +360,7 @@
   height: 30px;
   border: 1px solid #fff;
   resize: none;
-  fontsize: 18px;
+  font-size: 18px;
   margin-top: 9px;
   vertical-align: center;
   color: #5b6870;
@@ -385,18 +385,21 @@
   width: 100% !important;
   max-width: 100%;
  }
- .tabs-component [role='tablist'] {
-  @apply bg-header flex justify-between px-6 h-14 mb-4 text-white text-base  outline-none focus:outline-none;
- }
- .tabs-component [role='tablist'] button.active {
-  @apply relative  outline-none focus:outline-none text-white;
- }
- .tabs-component [role='tablist'] button.active::after {
-  content: '';
- }
- .tabs-component [role='tablist'] button {
-  @apply outline-none focus:outline-none text-gray-400 text-base uppercase;
- }
- .tabs-component [role='tabpanel'] {
- }
+}
+.MuiAvatar-root {
+    width: 3.5rem !important;
+    height: 3.5rem !important;
+
+}
+.tabs-component div[role='tablist'] {
+ @apply bg-header flex justify-between px-6 h-14 mb-4 text-white text-base  outline-none focus:outline-none;
+}
+.tabs-component div[role='tablist'] button.active {
+ @apply relative  outline-none focus:outline-none text-white;
+}
+.tabs-component div[role='tablist'] button.active::after {
+ content: '';
+}
+.tabs-component div[role='tablist'] button {
+ @apply outline-none focus:outline-none text-gray-400 text-base uppercase;
 }
