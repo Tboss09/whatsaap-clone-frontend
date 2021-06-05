@@ -225,21 +225,22 @@ const ChatRoom = () => {
 
     {/* Send some text messages  */}
     <form
-     className="input-area fixed bottom-5 right-0 left-0 "
+     className="input-area fixed bottom-3 right-0 left-0 "
      onSubmit={handleSubmit}
     >
-     <div className="input">
-      <div className="smiley animated bounceIn">
+     <div className="input  items-center px-2 relative">
+      <div className="smiley animated bounceIn absolute left-1 bottom-3">
+      <svg className="h-6 w-6 text-gray-500"  width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">  <path stroke="none" d="M0 0h24v24H0z"/>  <circle cx="12" cy="12" r="9" />  <line x1="9" y1="10" x2="9.01" y2="10" />  <line x1="15" y1="10" x2="15.01" y2="10" />  <path d="M9.5 15a3.5 3.5 0 0 0 5 0" /></svg>
       </div>
       <div className="text-input">
        <TextareaAutosize
         onChange={e => setValue(e.target.value)}
         value={myValue}
         placeholder="Type a message"
-        className="outline-none"
+        className="outline-none px-2"
        />
       </div>
-      <div className="attachment animated bounceIn">
+      <div className="attachment animated bounceIn absolute bottom-3 right-8 ">
        <svg
         className="h-5 w-5 text-gray-500"
         viewBox="0 0 24 24"
@@ -253,7 +254,7 @@ const ChatRoom = () => {
         <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48" />
        </svg>
       </div>
-      <div className="camera animated bounceIn">
+      <div className="camera animated bounceIn absolute bottom-3 right-2 ">
        <svg
         className="h-5 w-5 text-gray-500"
         width="24"
@@ -273,7 +274,7 @@ const ChatRoom = () => {
       </div>
      </div>
 
-     <div className="mic-button outline-none">
+     <div className="mic-button outline-none ml-2 self-end">
       <button
        className=" w-12 h-12 flex items-center justify-center outline-none "
        type="submit"

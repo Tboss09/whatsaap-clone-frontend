@@ -299,14 +299,14 @@
  /*-- Input Area --*/
  .input-area {
   width: 100%;
-  height: 40px;
+  height: fit-content;
   display: flex;
   color: #ccc;
-  padding: 0 10px;
+  padding: 0 5px;
  }
 
  .input-area .input {
-  flex-basis: 93%;
+  flex-basis: 100%;
   background: #fff;
   height: 100%;
   border-radius: 30px;
@@ -356,7 +356,6 @@
   color: #fff;
   border: none;
   font-size: 18px;
-  margin: 0 10px;
   border-radius: 50%;
   cursor: pointer;
  }
@@ -370,19 +369,17 @@
   width: 100% !important;
   max-width: 100%;
  }
- .smallText{
-     font-size :0.60rem;
+ .smallText {
+  font-size: 0.6rem;
  }
- .smallerText{
-    font-size :0.60rem;
-
+ .smallerText {
+  font-size: 0.6rem;
  }
 }
 
 .MuiAvatar-root {
-    width: 3rem !important;
-    height: 3rem !important;
-
+ width: 3rem !important;
+ height: 3rem !important;
 }
 .tabs-component div[role='tablist'] {
  @apply bg-header flex justify-between px-6 h-14 mb-4 text-white text-base  outline-none focus:outline-none;
