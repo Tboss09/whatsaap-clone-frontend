@@ -21,6 +21,7 @@ const ChatGroups = () => {
   socket.open()
   socket.emit('get_all_whatsapp_group')
   socket.on('get_data', message => {
+    console.log(message)
    setChatRooms(message)
   })
   return () => socket.close()
@@ -48,7 +49,6 @@ const ChatGroups = () => {
  React.useEffect(() => {
   socket.on('newly_created_group', message => {
    setChatRooms(oldChatRoom => [message, ...oldChatRoom])
-   console.log('This is the new data', message)
   })
  }, [])
 
@@ -83,6 +83,7 @@ const ChatGroups = () => {
      {chatRooms !== undefined ? (
       chatRooms.map(({ name, updatedAt, _id, user }) => {
        const message = user !== undefined && user[user.length - 1]
+       console.log(message)
        const timeOfMessage = new Date(updatedAt)
        const dateOfMessage =
         timeOfMessage.getMilliseconds() < new Date().getMilliseconds()
@@ -91,7 +92,7 @@ const ChatGroups = () => {
 
        return (
         <Link key={_id} to={`/chatroom/${_id}`}>
-         <div className="chatGroup">
+         <div className="chatGroup"  key={_id}>
           <div className="flex items-center">
            <Avatar
             src="https:picsum.photos/500/500"
@@ -126,13 +127,13 @@ const ChatGroups = () => {
        )
       })
      ) : (
-      <div className="skeleton mx-3 bg-gray-50 h-full">
+      <div className="skeleton mx-2 bg-gray-50 h-full">
        {skeleton.map(skeleton => (
         <>
          {/* Skeleton to load when data is not available */}
          <div
           key={skeleton}
-          className="flex items-center h-24 w-full justify-evenly animate-pulse  border-b-2 border-gray-300"
+          className="flex items-center mb-2 h-24 w-full justify-evenly animate-pulse  border-b-2 border-gray-300"
          >
           <div className="image h-10 w-10 bg-gray-300 rounded-full"></div>
           <div>
@@ -140,7 +141,7 @@ const ChatGroups = () => {
            <div className="image h-3 w-32 bg-gray-200 "></div>
           </div>
           {/* time */}
-          <div className="image h-3 w-6 bg-gray-300 self-start"></div>
+          <div className="image h-3 w-6 bg-gray-300 self-center"></div>
           {/* time */}
          </div>
         </>

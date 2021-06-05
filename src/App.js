@@ -14,11 +14,11 @@ const App = () => {
  return user ? (
   <Switch>
    <>
+    <ThemeContext.Provider value={{name:user.displayName,email:user.email}}>
     <Route path="/chatroom/:roomId">
-     <ChatRoom googleUsername={user.displayName} />
+     <ChatRoom />
     </Route>
 
-    <ThemeContext.Provider value={{name:user.displayName,email:user.email}}>
      <Route exact path="/">
       <HomePage user={user} />
      </Route>

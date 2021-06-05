@@ -3,7 +3,7 @@ import io from 'socket.io-client'
 const socket = io.connect('https://whatsapp-cloned-backend.herokuapp.com', {
  reconnection: true,
  reconnectionDelay: 1000,
- reconnectionDelayMax: 3000,
+ reconnectionDelayMax: 4000,
  reconnectionAttempts: 10,
  withCredentials: false,
  extraHeaders: {

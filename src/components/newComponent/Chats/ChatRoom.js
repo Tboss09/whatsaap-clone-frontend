@@ -4,14 +4,39 @@ import { Avatar, TextareaAutosize } from '@material-ui/core'
 import { useParams, useHistory } from 'react-router-dom'
 import socket from '../../../websocket/wb'
 import whatsappDate from 'date-and-time'
+import ThemeContext from '../../Context/ThemeContext'
 
-const ChatRoom = ({ googleUsername }) => {
+const ChatRoom = () => {
+ const googleUserInfo = React.useContext(ThemeContext)
+ const { name: googleUsername, email: googleEmail } = googleUserInfo
  const urlParam = useParams()
  let history = useHistory()
  const { roomId } = urlParam
  const [messageHeader, setMessageHeader] = React.useState('')
  const [messages, setMessages] = React.useState('')
  const [myValue, setValue] = React.useState('')
+ const [randomColors, setRandomColors] = React.useState('')
+ //  Set different colors of username
+
+ const colors = React.useMemo(
+  () => [
+   'text-purple-700 ',
+   'text-indigo-700',
+   'text-pink-700',
+   'text-blue-700',
+   'text-indigo-700',
+   'text-red-700',
+   'text-green-700',
+   'text-yellow-500',
+   'text-green-400',
+   'text-blue-400',
+   'text-gray-600',
+   'text-green-500',
+   'text-header',
+  ],
+  []
+ )
+ const random = Math.floor(Math.random() * colors.length)
 
  // Set Images of group chat
  // Fetch data for Group
@@ -20,43 +45,66 @@ const ChatRoom = ({ googleUsername }) => {
   socket.emit('get_group_by_id', roomId)
   socket.on('get_group_with_id', message => {
    setMessageHeader(message.name)
-  setMessages(message)
+   setMessages(message)
   })
+  return () => socket.open()
  }, [roomId])
  // Fetch data for Group
 
  // Sumbit message to Server
 
+ React.useEffect(() => {
+  setRandomColors(colors[random])
+ }, [colors,  random])
+
  const handleSubmit = e => {
   e.preventDefault()
-
   if (myValue.trim().length >= 1) {
    socket.emit('send_chat_message', {
+    _id: roomId,
+    color: randomColors,
+    email: googleEmail,
     name: googleUsername,
     message: myValue,
-    _id: roomId,
    })
+   //  socket.emit('get_last_sent_text_message')
   }
   setValue('')
  }
 
  // this makes the app real time
- //  /Through the app of socket io, this allows you to see the message you sent immediately
+ // /Through the app of socket io, this allows you to see the message you sent immediately
  React.useEffect(() => {
   socket.open()
-  socket.emit('get_last_sent_message_foreach_group')
-  socket.on('get_last_sent_message_foreach_group', chatMessage => {
-    console.log(chatMessage)
+  socket.on('get_last_sent_text_message', message => {
    setMessages(prevMessage => ({
-    user: [...(prevMessage.user || []), chatMessage[0]],
+    user: [...(prevMessage.user || []), message[0]],
    }))
   })
+  return () => socket.open()
  }, [])
 
  return (
   <div className="chatBodyMessage ">
+   <span
+    className="
+    text-purple-700 
+  text-indigo-70,
+  text-pink-700
+  text-blue-700
+  text-red-700
+  text-green-700
+  text-yellow-50
+  text-green-400
+  text-blue-400
+  text-gray-600
+  text-green-500
+  text-header
+  hidden
+    "
+   ></span>
    <div className="chat-header   flex justify-between items-center bg-header h-14 py-8 pl-1 pr-2">
-    {/* back icon and  avatar and name of groupssss  */}
+    {/* back icon and  avatar and name of groups  */}
     <div className="flex items-center">
      {/* Go back icon */}
      <div className="icon " onClick={history.goBack}>
@@ -130,59 +178,58 @@ const ChatRoom = ({ googleUsername }) => {
    </div>
    {/*Body  */}
 
+   {/* This is the conversation part  */}
    <div className="conversation ">
-    <div className="conversation-container pt-10 px-4">
-      
-     {messages.user !== undefined ? 
-      messages.user.map((user) => {
-        const {  name,message, _id, date } = user !== undefined && user
-        console.log(user)
-        const currentUserName = name
-       const isMessageFromCurrentUser = googleUsername === currentUserName
-       const dateOfMessage = new Date(date)
-       
+    <div className=" conversation-container pt-10 px-4 pb-5">
+     {messages.user !== undefined &&
+      messages.user.map(({ email, message, _id, createdAt, color, name }) => {
+       const now = new Date(createdAt)
+       const isMessageFromCurrentUser = email === googleEmail
        return (
         <div
-         className={`message  relative mb-2 ${
-          isMessageFromCurrentUser ? 'sent' : 'received'
+         className={`message mb-2  ${
+          isMessageFromCurrentUser ? 'sent' : 'received w-52'
          }`}
          key={_id}
         >
-         {message}
-         <span className="absolute text-xs -top-4 truncate left-0 text-green-700 font-bold capitalize  w-24">
-          {!isMessageFromCurrentUser && currentUserName}
-         </span>
+         {!isMessageFromCurrentUser && (
+          <div className=" flex justify-between">
+           <span className={`text-xs font-bold w-52 truncate ${color}`}>
+            {email}
+           </span>
+           <span className="smallerText text-gray-400 w-24  truncate">{`~ ${name}hdfhhfhfhffjdjdj`}</span>
+          </div>
+         )}
+         <span>{message !== undefined && message}</span>
          <span className="metadata">
-          <span className="time">
-           {whatsappDate.format(dateOfMessage, 'hh:mm')}
-          </span>
+          <span className="time">{whatsappDate.format(now, 'hh:mm')}</span>
           <span className="tick">
            <svg
-            className="h-4 w-4 text-gray-400 "
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-4 w-4 text-gray-800"
+            viewBox="0 0 20 20"
+            fill="currentColor"
            >
             <path
-             strokeLinecap="round"
-             strokeLinejoin="round"
-             strokeWidth="2"
-             d="M5 13l4 4L19 7"
+             fillRule="evenodd"
+             d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+             clipRule="evenodd"
             />
            </svg>
           </span>
          </span>
         </div>
        )
-      })
-      :''
-      }
+      })}
     </div>
 
-    <form className="input-area " onSubmit={handleSubmit}>
+    {/* Send some text messages  */}
+    <form
+     className="input-area fixed bottom-5 right-0 left-0 "
+     onSubmit={handleSubmit}
+    >
      <div className="input">
       <div className="smiley animated bounceIn">
-       <i className="far fa-smile"></i>
       </div>
       <div className="text-input">
        <TextareaAutosize
